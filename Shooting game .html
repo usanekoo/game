@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Shooting Game</title>
+    <style>
+        body { margin: 0; overflow: hidden; }
+        canvas { background: #000; display: block; margin: auto; }
+    </style>
+</head>
+<body>
+    <canvas id="gameCanvas" width="800" height="600"></canvas>
+    <script>
+        const canvas = document.getElementById('gameCanvas');
+        const ctx = canvas.getContext('2d');
+        let player, bullets = [], enemies = [], score = 0;
+
+        class Player {
+            constructor() {
+                this.width = 30;
+                this.height = 30;
+                this.x = canvas.width / 2 - this.width / 2;
+                this.y = canvas.height - this.height - 10;
+                this.speed = 5;
+            }
+            move(dir) {
+                this.x += dir * this.speed;
+                if (this.x < 0) this.x = 0;
+                if (this.x + this.width > canvas.width) this.x = canvas.width - this.width;
+            }
+        }
+
+        class Bullet {
+            constructor(x, y) {
+                this.x = x;
+                this.y = y;
+                this.radius = 5;
+                this.speed = 7;
+            }
+            update() {
+                this.y -= this.speed;
+            }
+        }
+
+        class Enemy {
+            constructor() {
+                this.width = 30;
+                this.height = 30;
+                this.x = Math.random() * (canvas.width - this.width);
+                this.y = 0;
+                this.speed = 2;
+            }
+            update() {
+                this.y += this.speed;
+            }
+        }
+
+        function init() {
+            player = new Player();
+            spawnEnemies();
+            gameLoop();
+        }
+
+        function spawnEnemies() {
+            setInterval(() => {
+                enemies.push(new Enemy());
+            }, 1000);
+        }
+
+        function gameLoop() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            update();
+            draw();
+            requestAnimationFrame(gameLoop);
+        }
+
+        function update() {
+            bullets.forEach((bullet, index) => {
+                bullet.update();
+                if (bullet.y < 0) bullets.splice(index, 1);
+            });
+            enemies.forEach((enemy, index) => {
+                enemy.update();
+                if (enemy.y > canvas.height) {
+                    enemies.splice(index, 1);
+                    score++;
+                }
+            });
+            checkCollisions();
+        }
+
+        function draw() {
+            ctx.fillStyle = '#0f0';
+            ctx.fillRect(player.x, player.y, player.width, player.height);
+            bullets.forEach(b => {
+                ctx.beginPath();
+                ctx.arc(b.x, b.y, b.radius, 0, Math.PI * 2);
+                ctx.fill();
+            });
+            enemies.forEach(e => {
+                ctx.fillStyle = '#f00';
+                ctx.fillRect(e.x, e.y, e.width, e.height);
+            });
+            ctx.fillStyle = '#fff';
+            ctx.fillText('Score: ' + score, 10, 20);
+        }
+
+        function checkCollisions() {
+            bullets.forEach((bullet, bIndex) => {
+                enemies.forEach((enemy, eIndex) => {
+                    if (bullet.x > enemy.x && bullet.x < enemy.x + enemy.width &&
+                        bullet.y > enemy.y && bullet.y < enemy.y + enemy.height) {
+                        bullets.splice(bIndex, 1);
+                        enemies.splice(eIndex, 1);
+                        score += 10;
+                    }
+                });
+            });
+        }
+
+        window.addEventListener('keydown', (e) => {
+            if (e.code === 'ArrowLeft') player.move(-1);
+            if (e.code === 'ArrowRight') player.move(1);
+            if (e.code === 'Space') bullets.push(new Bullet(player.x + player.width / 2, player.y));
+        });
+
+        init();
+    </script>
+</body>
+</html>
