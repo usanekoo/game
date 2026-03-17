@@ -1,217 +1,177 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ja">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Shooting Game</title>
     <style>
-        body {
+        * {
             margin: 0;
             padding: 0;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            height: 100vh;
-            background-color: #1a1a1a;
-            font-family: Arial, sans-serif;
-            color: white;
+            box-sizing: border-box;
         }
 
-        .game-container {
+        body {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background-color: #000;
+            font-family: Arial, sans-serif;
+        }
+
+        h1 {
+            color: #0f0;
+            margin-bottom: 20px;
+            text-shadow: 0 0 10px #0f0;
+        }
+
+        #gameWindow {
             position: relative;
             width: 800px;
             height: 600px;
-            background: linear-gradient(180deg, #0a0a2e 0%, #16213e 100%);
-            border: 3px solid #00ff41;
+            background-color: #001;
+            border: 2px solid #0f0;
             overflow: hidden;
-            box-shadow: 0 0 20px #00ff41;
-        }
-
-        .hud {
-            position: absolute;
-            top: 10px;
-            left: 10px;
-            z-index: 20;
-            color: #00ff41;
-            font-size: 16px;
-        }
-
-        .score {
-            margin-bottom: 10px;
-        }
-
-        .health-bar-container {
-            width: 200px;
-            height: 20px;
-            background: rgba(0, 0, 0, 0.5);
-            border: 2px solid #00ff41;
-            border-radius: 3px;
-            overflow: hidden;
-            margin-top: 5px;
-        }
-
-        .health-bar {
-            height: 100%;
-            background: linear-gradient(90deg, #00ff41, #00cc33);
-            width: 100%;
-            transition: width 0.2s;
-            box-shadow: 0 0 10px #00ff41;
-        }
-
-        .health-text {
-            font-size: 12px;
-            margin-top: 3px;
         }
 
         #player {
             position: absolute;
-            width: 50px;
-            height: 60px;
-            z-index: 10;
-            left: 375px;
-            top: 520px;
-            background: #00ff41;
-            border-radius: 5px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 40px;
-            color: white;
-            font-weight: bold;
-            box-shadow: 0 0 15px #00ff41;
+            width: 40px;
+            height: 40px;
+            bottom: 20px;
+            left: 380px;
+            background-color: #0f0;
+            clip-path: polygon(50% 0%, 100% 100%, 0% 100%);
         }
 
         .bullet {
             position: absolute;
-            width: 8px;
-            height: 20px;
-            background: linear-gradient(180deg, #ffff00, #ff6600);
-            border-radius: 4px;
-            box-shadow: 0 0 10px #ffff00, 0 0 20px #ff6600;
+            width: 5px;
+            height: 15px;
+            background-color: #ff0;
+            box-shadow: 0 0 5px #ff0;
         }
 
         .enemy {
             position: absolute;
-            width: 45px;
-            height: 45px;
-            z-index: 5;
-            background: #ff0055;
+            width: 40px;
+            height: 40px;
+            background-color: #f00;
             border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 30px;
-            color: white;
-            box-shadow: 0 0 15px #ff0055;
+            box-shadow: 0 0 10px #f00;
         }
 
-        .game-over {
+        #score {
             position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            background: rgba(0, 0, 0, 0.95);
-            padding: 40px;
-            border: 3px solid #ff0055;
-            text-align: center;
-            z-index: 100;
-            display: none;
-            border-radius: 10px;
-            box-shadow: 0 0 30px #ff0055;
-        }
-
-        .game-over h1 {
-            font-size: 48px;
-            color: #ff0055;
-            margin: 0;
-            text-shadow: 0 0 10px #ff0055;
-        }
-
-        .game-over p {
-            font-size: 24px;
-            color: #00ff41;
-            margin: 20px 0;
-        }
-
-        .game-over button {
-            padding: 15px 30px;
+            top: 10px;
+            left: 10px;
+            color: #0f0;
             font-size: 18px;
-            background-color: #00ff41;
+            z-index: 10;
+        }
+
+        #health {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            color: #0f0;
+            font-size: 18px;
+            z-index: 10;
+        }
+
+        #gameOverScreen {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.9);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 100;
+            flex-direction: column;
+        }
+
+        #gameOverScreen h2 {
+            color: #f00;
+            font-size: 48px;
+            margin-bottom: 20px;
+        }
+
+        #gameOverScreen p {
+            color: #0f0;
+            font-size: 24px;
+            margin-bottom: 20px;
+        }
+
+        #gameOverScreen button {
+            padding: 10px 30px;
+            font-size: 18px;
+            background-color: #0f0;
             color: #000;
             border: none;
-            border-radius: 5px;
             cursor: pointer;
-            transition: all 0.3s;
-            font-weight: bold;
+            border-radius: 5px;
         }
 
-        .game-over button:hover {
-            background-color: #00cc33;
-            box-shadow: 0 0 15px #00ff41;
+        #gameOverScreen button:hover {
+            background-color: #0cc;
         }
 
         .controls {
+            color: #0f0;
             margin-top: 20px;
             font-size: 14px;
-            color: #00ff41;
-            text-align: center;
         }
     </style>
 </head>
 <body>
-    <h1 style="color: #00ff41; text-shadow: 0 0 10px #00ff41;">⚡ SHOOTING GAME ⚡</h1>
-    <div class="game-container" id="gameContainer">
-        <div class="hud">
-            <div class="score" id="score">Score: 0</div>
-            <div>
-                <div>HP:</div>
-                <div class="health-bar-container">
-                    <div class="health-bar" id="healthBar"></div>
-                </div>
-                <div class="health-text" id="healthText">100/100</div>
-            </div>
-        </div>
-        <div id="player">▲</div>
-        <div class="game-over" id="gameOver">
-            <h1>💀 GAME OVER 💀</h1>
+    <h1>🎮 SHOOTING GAME 🎮</h1>
+    
+    <div id="gameWindow">
+        <div id="score">Score: 0</div>
+        <div id="health">HP: 100/100</div>
+        <div id="player"></div>
+        <div id="gameOverScreen">
+            <h2>GAME OVER</h2>
             <p id="finalScore">Score: 0</p>
             <button onclick="location.reload()">Restart</button>
         </div>
     </div>
+
     <div class="controls">
         <p>← → キーで移動 | スペースキーで発射 | Rキーでリセット</p>
     </div>
 
     <script>
-        const gameContainer = document.getElementById('gameContainer');
-        const playerElement = document.getElementById('player');
+        const gameWindow = document.getElementById('gameWindow');
+        const player = document.getElementById('player');
         const scoreDisplay = document.getElementById('score');
-        const gameOverScreen = document.getElementById('gameOver');
+        const healthDisplay = document.getElementById('health');
+        const gameOverScreen = document.getElementById('gameOverScreen');
         const finalScoreDisplay = document.getElementById('finalScore');
-        const healthBar = document.getElementById('healthBar');
-        const healthText = document.getElementById('healthText');
 
+        // ゲーム状態
         const game = {
-            player: {
-                x: 375,
-                y: 520,
-                width: 50,
-                height: 60,
-                speed: 8,
-                maxHealth: 100,
-                health: 100
-            },
-            bullets: [],
-            enemies: [],
+            playerX: 380,
+            playerY: 540,
+            playerWidth: 40,
+            playerHeight: 40,
+            playerSpeed: 7,
+            health: 100,
+            maxHealth: 100,
             score: 0,
             gameActive: true,
-            keys: {}
+            bullets: [],
+            enemies: []
         };
 
-        // キー入力管理
+        let keys = {};
+
+        // キー入力
         document.addEventListener('keydown', (e) => {
-            game.keys[e.key] = true;
+            keys[e.key] = true;
             if (e.key === ' ') {
                 e.preventDefault();
                 shoot();
@@ -222,68 +182,51 @@
         });
 
         document.addEventListener('keyup', (e) => {
-            game.keys[e.key] = false;
+            keys[e.key] = false;
         });
 
-        // プレイヤーの移動
+        // プレイヤー移動
         function movePlayer() {
-            if (game.keys['ArrowLeft'] && game.player.x > 0) {
-                game.player.x -= game.player.speed;
+            if (keys['ArrowLeft'] && game.playerX > 0) {
+                game.playerX -= game.playerSpeed;
             }
-            if (game.keys['ArrowRight'] && game.player.x < 800 - game.player.width) {
-                game.player.x += game.player.speed;
+            if (keys['ArrowRight'] && game.playerX < 800 - game.playerWidth) {
+                game.playerX += game.playerSpeed;
             }
-            playerElement.style.left = game.player.x + 'px';
-            playerElement.style.top = game.player.y + 'px';
+            player.style.left = game.playerX + 'px';
+            player.style.bottom = (600 - game.playerY - game.playerHeight) + 'px';
         }
 
         // 発射
         function shoot() {
             if (!game.gameActive) return;
-            const bullet = {
-                x: game.player.x + game.player.width / 2 - 4,
-                y: game.player.y - 20,
-                width: 8,
-                height: 20,
-                speed: 12
-            };
-            game.bullets.push(bullet);
+            game.bullets.push({
+                x: game.playerX + game.playerWidth / 2 - 2.5,
+                y: game.playerY,
+                width: 5,
+                height: 15,
+                speed: 10
+            });
         }
 
-        // 敵の生成
+        // 敵生成
         function spawnEnemy() {
             if (!game.gameActive) return;
-            const enemy = {
-                x: Math.random() * (800 - 45),
-                y: -45,
-                width: 45,
-                height: 45,
-                speed: 3.5 + game.score / 150
-            };
-            game.enemies.push(enemy);
-        }
-
-        // 体力バー更新
-        function updateHealthBar() {
-            const healthPercent = (game.player.health / game.player.maxHealth) * 100;
-            healthBar.style.width = healthPercent + '%';
-            healthText.innerText = `${game.player.health}/${game.player.maxHealth}`;
-
-            if (healthPercent > 50) {
-                healthBar.style.background = 'linear-gradient(90deg, #00ff41, #00cc33)';
-            } else if (healthPercent > 25) {
-                healthBar.style.background = 'linear-gradient(90deg, #ffaa00, #ff6600)';
-            } else {
-                healthBar.style.background = 'linear-gradient(90deg, #ff0055, #ff3366)';
-            }
+            game.enemies.push({
+                x: Math.random() * (800 - 40),
+                y: 0,
+                width: 40,
+                height: 40,
+                speed: 3 + game.score / 200
+            });
         }
 
         // 衝突判定
-        function isColliding(rect1, rect2) {
-            return rect1.x < rect2.x + rect2.width &&
-                   rect1.x + rect1.width > rect2.x &&
-                   rect1.y < rect2.y + rect2.height &&
-                   rect1.y + rect1.height > rect2.y;
+        function checkCollision(obj1, obj2) {
+            return obj1.x < obj2.x + obj2.width &&
+                   obj1.x + obj1.width > obj2.x &&
+                   obj1.y < obj2.y + obj2.height &&
+                   obj1.y + obj1.height > obj2.y;
         }
 
         // ゲーム更新
@@ -292,44 +235,44 @@
 
             movePlayer();
 
-            // 弾の移動と敵との衝突判定
+            // 弾の更新
             for (let i = game.bullets.length - 1; i >= 0; i--) {
                 game.bullets[i].y -= game.bullets[i].speed;
-                
+
                 if (game.bullets[i].y < 0) {
                     game.bullets.splice(i, 1);
                     continue;
                 }
 
-                // 敵との衝突判定
+                // 敵との衝突
                 for (let j = game.enemies.length - 1; j >= 0; j--) {
-                    if (isColliding(game.bullets[i], game.enemies[j])) {
+                    if (checkCollision(game.bullets[i], game.enemies[j])) {
                         game.bullets.splice(i, 1);
                         game.enemies.splice(j, 1);
                         game.score += 10;
-                        scoreDisplay.innerText = 'Score: ' + game.score;
+                        scoreDisplay.textContent = 'Score: ' + game.score;
                         break;
                     }
                 }
             }
 
-            // 敵の移動
+            // 敵の更新
             for (let i = game.enemies.length - 1; i >= 0; i--) {
                 game.enemies[i].y += game.enemies[i].speed;
 
-                // プレイヤーとの衝突判定
-                if (isColliding(game.enemies[i], game.player)) {
-                    game.player.health -= 20;
-                    updateHealthBar();
+                // プレイヤーとの衝突
+                if (checkCollision(game.enemies[i], { x: game.playerX, y: game.playerY, width: game.playerWidth, height: game.playerHeight })) {
+                    game.health -= 20;
+                    healthDisplay.textContent = 'HP: ' + game.health + '/' + game.maxHealth;
                     game.enemies.splice(i, 1);
-                    
-                    if (game.player.health <= 0) {
+
+                    if (game.health <= 0) {
                         endGame();
                     }
                     continue;
                 }
 
-                // 画面外に出た敵を削除
+                // 画面外
                 if (game.enemies[i].y > 600) {
                     game.enemies.splice(i, 1);
                 }
@@ -338,70 +281,67 @@
 
         // 描画
         function draw() {
-            // 弾の描画
-            const existingBullets = document.querySelectorAll('.bullet');
-            existingBullets.forEach(b => b.remove());
+            // 弾を描画
+            const oldBullets = document.querySelectorAll('.bullet');
+            oldBullets.forEach(b => b.remove());
 
             game.bullets.forEach(bullet => {
-                const bulletElement = document.createElement('div');
-                bulletElement.className = 'bullet';
-                bulletElement.style.left = bullet.x + 'px';
-                bulletElement.style.top = bullet.y + 'px';
-                gameContainer.appendChild(bulletElement);
+                const bulletEl = document.createElement('div');
+                bulletEl.className = 'bullet';
+                bulletEl.style.left = bullet.x + 'px';
+                bulletEl.style.top = bullet.y + 'px';
+                gameWindow.appendChild(bulletEl);
             });
 
-            // 敵の描画
-            const existingEnemies = document.querySelectorAll('.enemy');
-            existingEnemies.forEach(e => e.remove());
+            // 敵を描画
+            const oldEnemies = document.querySelectorAll('.enemy');
+            oldEnemies.forEach(e => e.remove());
 
             game.enemies.forEach(enemy => {
-                const enemyElement = document.createElement('div');
-                enemyElement.className = 'enemy';
-                enemyElement.style.left = enemy.x + 'px';
-                enemyElement.style.top = enemy.y + 'px';
-                enemyElement.textContent = '●';
-                gameContainer.appendChild(enemyElement);
+                const enemyEl = document.createElement('div');
+                enemyEl.className = 'enemy';
+                enemyEl.style.left = enemy.x + 'px';
+                enemyEl.style.top = enemy.y + 'px';
+                gameWindow.appendChild(enemyEl);
             });
         }
 
         // ゲーム終了
         function endGame() {
             game.gameActive = false;
-            gameOverScreen.style.display = 'block';
-            finalScoreDisplay.innerText = 'Score: ' + game.score;
+            gameOverScreen.style.display = 'flex';
+            finalScoreDisplay.textContent = 'Score: ' + game.score;
         }
 
-        // ゲームリセット
+        // リセット
         function resetGame() {
-            game.player.x = 375;
-            game.player.y = 520;
-            game.player.health = 100;
-            game.bullets = [];
-            game.enemies = [];
+            game.playerX = 380;
+            game.playerY = 540;
+            game.health = 100;
             game.score = 0;
             game.gameActive = true;
+            game.bullets = [];
+            game.enemies = [];
             gameOverScreen.style.display = 'none';
-            scoreDisplay.innerText = 'Score: 0';
-            updateHealthBar();
+            scoreDisplay.textContent = 'Score: 0';
+            healthDisplay.textContent = 'HP: 100/100';
         }
 
         // ゲームループ
-        let enemySpawnCounter = 0;
+        let spawnTimer = 0;
         function gameLoop() {
             update();
             draw();
 
-            enemySpawnCounter++;
-            if (enemySpawnCounter > 25) {
+            spawnTimer++;
+            if (spawnTimer > 40) {
                 spawnEnemy();
-                enemySpawnCounter = 0;
+                spawnTimer = 0;
             }
 
             requestAnimationFrame(gameLoop);
         }
 
-        // 初期化
-        updateHealthBar();
         gameLoop();
     </script>
 </body>
