@@ -71,18 +71,15 @@
             z-index: 10;
             left: 375px;
             top: 520px;
-        }
-
-        .player-sprite {
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(135deg, #00ff41 0%, #00cc33 100%);
-            clip-path: polygon(50% 0%, 100% 30%, 85% 60%, 100% 100%, 75% 85%, 50% 95%, 25% 85%, 0% 100%, 15% 60%, 0% 30%);
-            position: relative;
-            box-shadow: 0 0 15px #00ff41, inset -2px -2px 5px rgba(0, 0, 0, 0.3);
+            background: #00ff41;
+            border-radius: 5px;
             display: flex;
             align-items: center;
             justify-content: center;
+            font-size: 40px;
+            color: white;
+            font-weight: bold;
+            box-shadow: 0 0 15px #00ff41;
         }
 
         .bullet {
@@ -99,48 +96,14 @@
             width: 45px;
             height: 45px;
             z-index: 5;
-        }
-
-        .enemy-sprite {
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(135deg, #ff0055, #ff3366);
-            clip-path: polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%);
-            position: relative;
-            box-shadow: 0 0 15px #ff0055, inset -2px -2px 5px rgba(0, 0, 0, 0.3);
+            background: #ff0055;
+            border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
-        }
-
-        .enemy-eye {
-            position: absolute;
-            width: 8px;
-            height: 8px;
-            background: white;
-            border-radius: 50%;
-            box-shadow: 0 0 3px white;
-        }
-
-        .enemy-eye.left {
-            top: 35%;
-            left: 20%;
-        }
-
-        .enemy-eye.right {
-            top: 35%;
-            right: 20%;
-        }
-
-        .enemy-mouth {
-            position: absolute;
-            bottom: 20%;
-            left: 50%;
-            transform: translateX(-50%);
-            width: 12px;
-            height: 6px;
-            background: #ff0000;
-            border-radius: 0 0 6px 6px;
+            font-size: 30px;
+            color: white;
+            box-shadow: 0 0 15px #ff0055;
         }
 
         .game-over {
@@ -209,9 +172,7 @@
                 <div class="health-text" id="healthText">100/100</div>
             </div>
         </div>
-        <div id="player">
-            <div class="player-sprite"></div>
-        </div>
+        <div id="player">▲</div>
         <div class="game-over" id="gameOver">
             <h1>💀 GAME OVER 💀</h1>
             <p id="finalScore">Score: 0</p>
@@ -398,23 +359,7 @@
                 enemyElement.className = 'enemy';
                 enemyElement.style.left = enemy.x + 'px';
                 enemyElement.style.top = enemy.y + 'px';
-                
-                const sprite = document.createElement('div');
-                sprite.className = 'enemy-sprite';
-                
-                const leftEye = document.createElement('div');
-                leftEye.className = 'enemy-eye left';
-                
-                const rightEye = document.createElement('div');
-                rightEye.className = 'enemy-eye right';
-                
-                const mouth = document.createElement('div');
-                mouth.className = 'enemy-mouth';
-                
-                sprite.appendChild(leftEye);
-                sprite.appendChild(rightEye);
-                sprite.appendChild(mouth);
-                enemyElement.appendChild(sprite);
+                enemyElement.textContent = '●';
                 gameContainer.appendChild(enemyElement);
             });
         }
